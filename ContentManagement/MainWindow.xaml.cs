@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using ContentManagement.Entities;
 
 namespace ContentManagement {
     /// <summary>
@@ -23,13 +24,13 @@ namespace ContentManagement {
             gridBatchMonitor.Visibility = Visibility.Hidden;
 
             // Get all libraries from Unifi and display in the libraries combobox
-            List<Unifi.Library> libraries = Unifi.GetLibraries(unifiToken);
+            List<Library> libraries = Unifi.GetLibraries(unifiToken);
 
             // Sort the libraries by name
             libraries = libraries.OrderBy(o => o.Name).ToList();
 
             // Add each library to the combobox as items
-            foreach (Unifi.Library library in libraries)
+            foreach (Library library in libraries)
                 comboLibraries.Items.Add(library);
         }
 
@@ -40,18 +41,18 @@ namespace ContentManagement {
         /// <param name="e"></param>
         private void ComboLibraries_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             // Get selected item as Library object
-            Unifi.Library selectedLib = (Unifi.Library)comboLibraries.SelectedItem;
+            Library selectedLib = (Library)comboLibraries.SelectedItem;
 
             // Get all content from the select library
-            List<Unifi.Content> contentList = Unifi.GetContentFromLibrary(unifiToken, selectedLib.Id);
+            List<Content> contentList = Unifi.GetContentFromLibrary(unifiToken, selectedLib.Id);
 
             // Loop through all Content and retrieve Manufacturer and Model parameter data
-            foreach (Unifi.Content c in contentList) {
-                List<Unifi.Parameter> parameters = new List<Unifi.Parameter>();
+            foreach (Content c in contentList) {
+                List<Parameter> parameters = new List<Parameter>();
                 parameters = c.Parameters.ToList();
 
                 // Loop through all parameters to retrieve the Manufacturer and Model parameter values for display in DataGrid
-                foreach (Unifi.Parameter p in parameters) {
+                foreach (Parameter p in parameters) {
                     // Pass parameter values to Content object
                     if (p.Name == "Manufacturer") { c.Manufacturer = p.Value; }
 
@@ -72,10 +73,10 @@ namespace ContentManagement {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DataGridMain_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            Unifi.Content selectedContent = new Unifi.Content();
+            Content selectedContent = new Content();
 
             // Get selected item as a Content object
-            if (dataGridMain.SelectedItem != null) { selectedContent = (Unifi.Content)dataGridMain.SelectedItem; }
+            if (dataGridMain.SelectedItem != null) { selectedContent = (Content)dataGridMain.SelectedItem; }
 
             // Enable Edit Button if an iten is selected, hide if none
             if (dataGridMain.SelectedItems.Count > 0) { btnEditContent.Visibility = Visibility.Visible; }
@@ -100,7 +101,7 @@ namespace ContentManagement {
             gridEditParams.Visibility = Visibility.Visible;
 
             // Get selected item as a Content object
-            Unifi.Content selectedContent = (Unifi.Content)dataGridMain.SelectedItem;
+            Content selectedContent = (Content)dataGridMain.SelectedItem;
 
             // Prepopulate Manufacturer and Model fields
             if (selectedContent.Manufacturer != "") { txtBxManufacturer.Text = selectedContent.Manufacturer; }
@@ -125,16 +126,16 @@ namespace ContentManagement {
         /// <param name="e"></param>
         private void BtnSave_Click(object sender, RoutedEventArgs e) {
             // Get selected row as a Content object
-            Unifi.Content selectedItem = dataGridMain.SelectedItems.OfType<Unifi.Content>().ToList()[0];
+            Content selectedItem = dataGridMain.SelectedItems.OfType<Content>().ToList()[0];
 
             // Get selected Type Name
             string familyTypeName = (comboFamilyTypes.SelectedValue).ToString();
 
             try {
                 // Call API to set the Type Parameter value and retrieve the response as Batch object
-                Unifi.Batch batchManufacturer =
+                Batch batchManufacturer =
                     Unifi.SetTypeParameterValue(unifiToken, selectedItem, familyTypeName, "Manufacturer", txtBxManufacturer.Text, "TEXT", 2016);
-                Unifi.Batch batchModel = Unifi.SetTypeParameterValue(unifiToken, selectedItem, familyTypeName, "Model", txtBxModel.Text, "TEXT", 2016);
+                Batch batchModel = Unifi.SetTypeParameterValue(unifiToken, selectedItem, familyTypeName, "Model", txtBxModel.Text, "TEXT", 2016);
 
                 comboBatches.Items.Add(batchManufacturer.BatchId);
                 comboBatches.Items.Add(batchModel.BatchId);
@@ -174,7 +175,7 @@ namespace ContentManagement {
             string batchId = comboBatches.SelectedItem.ToString();
 
             // Retrieve BatchStatus and display data
-            Unifi.BatchStatus status = Unifi.GetBatchStatus(unifiToken, batchId);
+            BatchStatus status = Unifi.GetBatchStatus(unifiToken, batchId);
 
             txtBoxBatchStatus.Text += "[" + DateTime.Now.ToLocalTime().ToString() + "]" + batchId + ": ";
 
