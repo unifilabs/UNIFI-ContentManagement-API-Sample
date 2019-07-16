@@ -21,7 +21,7 @@ namespace ContentManagement {
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("Content-Type", "application/json");
-            request.AddParameter("undefined", "{\n\t\"username\": \"" + username + "\",\n\t\"password\": \"" + password + "\"\n}\n", ParameterType.RequestBody);
+            request.AddParameter("undefined", JsonConvert.SerializeObject(new { username, password }), ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
 
             // Deserialize JSON response to a dynamic object to retrieve the access token
@@ -66,9 +66,12 @@ namespace ContentManagement {
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("Authorization", "Bearer " + accessToken);
             request.AddHeader("Content-Type", "application/json");
-            request.AddParameter("undefined", "{\n  \"terms\": \"*\",\n  \"libraries\": [\"" + libraryId + "\"],\n  \"return\": \"with-parameters\"," +
-                                              "\"size\": " + "20" + "\n" +
-                                              "}", ParameterType.RequestBody);
+            request.AddParameter("undefined", JsonConvert.SerializeObject(new {
+                terms = "*",
+                libraries = new[] { libraryId },
+                @return = "with-parameters",
+                size = 20
+            }), ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
 
             // Deserialize JSON response to a List of Content objects
@@ -92,7 +95,7 @@ namespace ContentManagement {
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("Authorization", "Bearer " + accessToken);
             request.AddHeader("Content-Type", "application/json");
-            request.AddParameter("undefined", "{\n  \"terms\": \"" + name + "\",\n  \"return\": \"with-parameters\"\n}\n", ParameterType.RequestBody);
+            request.AddParameter("undefined", JsonConvert.SerializeObject(new { terms = name, @return = "with-parameters" }), ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
 
             // Deserialize JSON response to a Content object
@@ -155,17 +158,19 @@ namespace ContentManagement {
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("Authorization", "Bearer " + accessToken);
             request.AddHeader("Content-Type", "application/json");
-            request.AddParameter("undefined", "{\n    \"Requests\": [\n        {\n            " +
-                                              "\"ObjectId\": \"" + content.RepositoryFileId + "\",\n            " +
-                                              "\"Operation\": \"SetTypeValues\",\n            " +
-                                              "\"ExistingName\": \"" + parameterName + "\",\n            " +
-                                              "\"Type\": \"" + dataType + "\",\n            " +
-                                              "\"RevitYear\": " + revitYear + ",\n            " +
-                                              "\"Values\": " +
-                                              "[\n            \t\t{\n            \t\t\t" +
-                                              "\"TypeName\": " + ToLiteral(typeName) + ",\n            \t\t\t" +
-                                              "\"Value\": \"" + parameterValue + "\"\n            \t\t}\n            \t]\n        }\n    ]\n}",
-                ParameterType.RequestBody);
+            request.AddParameter("undefined", JsonConvert.SerializeObject(new {
+                Requests = new[] {
+                    new {
+                        ObjectId = content.RepositoryFileId,
+                        Operation = "SetTypeValues",
+                        ExistingName = parameterName,
+                        Type = dataType,
+                        RevitYear = revitYear,
+                        Values = new[] { new { TypeName = ToLiteral(typeName), Value = parameterValue } }
+                    }
+                }
+            }), ParameterType.RequestBody);
+
             IRestResponse response = client.Execute(request);
 
             // Deserialize reponse as Batch object
