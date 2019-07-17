@@ -69,6 +69,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Entities\BaseFileVersion.cs" />
+    <Compile Include="Entities\Batch.cs" />
+    <Compile Include="Entities\BatchStatus.cs" />
+    <Compile Include="Entities\Content.cs" />
+    <Compile Include="Entities\Library.cs" />
+    <Compile Include="Entities\Parameter.cs" />
+    <Compile Include="Entities\Revision.cs" />
+    <Compile Include="Entities\Tag.cs" />
     <Compile Include="Secrets.cs" />
     <Compile Include="Unifi.cs" />
     <Page Include="MainWindow.xaml">
