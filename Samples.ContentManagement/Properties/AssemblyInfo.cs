@@ -1,17 +1,15 @@
 ﻿using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ContentManagement")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("UnifiLabs.Samples.ContentManagement")]
+[assembly: AssemblyDescription("UNIFI Content Management API demonstration.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ContentManagement")]
+[assembly: AssemblyCompany("UNIFI Labs, Inc.")]
+[assembly: AssemblyProduct("UNIFI Labs, Inc. Content Management API")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
