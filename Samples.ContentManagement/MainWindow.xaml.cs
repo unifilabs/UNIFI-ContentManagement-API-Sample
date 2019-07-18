@@ -172,20 +172,20 @@ namespace ContentManagement {
         /// <param name="e"></param>
         private void BtnRefreshBatchMon_Click(object sender, RoutedEventArgs e) {
             // Get BatchId from combobox
-            string batchId = comboBatches.SelectedItem.ToString();
+            if (comboBatches.SelectedItem == null) { return; }
+
+            var batchId = comboBatches.SelectedItem.ToString();
+
+            var loading = $"[{DateTime.Now.ToLocalTime()}] {batchId}: Loading...";
+
+            listBatchStatus.Items.Add(loading);
 
             // Retrieve BatchStatus and display data
-            BatchStatus status = Unifi.GetBatchStatus(unifiToken, batchId);
+            var status = Unifi.GetBatchStatus(unifiToken, batchId);
 
-            txtBoxBatchStatus.Text += "[" + DateTime.Now.ToLocalTime().ToString() + "]" + batchId + ": ";
-
-            if (status.PendingFiles == 0 && status.OkFiles == status.TotalFiles) { txtBoxBatchStatus.Text += "Complete"; }
-
-            if (status.PendingFiles > 0) { txtBoxBatchStatus.Text += "Pending"; }
-
-            if (status.FailedFiles == 1) { txtBoxBatchStatus.Text += "Failed"; }
-
-            txtBoxBatchStatus.Text += "\n---\n";
+            listBatchStatus.Items.Remove(loading);
+            listBatchStatus.Items.Add($"[{DateTime.Now.ToLocalTime()}] {batchId} {status.TotalFiles} Files | " +
+                                      $"{status.PendingFiles} Pending | {status.OkFiles} Complete | {status.FailedFiles} Failed");
         }
 
         /// <summary>
@@ -213,6 +213,6 @@ namespace ContentManagement {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BtnClearBatchMon_Click(object sender, RoutedEventArgs e) { txtBoxBatchStatus.Text = ""; }
+        private void BtnClearBatchMon_Click(object sender, RoutedEventArgs e) { listBatchStatus.Items.Clear(); }
     }
 }
