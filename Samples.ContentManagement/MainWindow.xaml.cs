@@ -40,8 +40,7 @@ namespace ContentManagement {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ComboLibraries_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            // Get selected item as Library object
-            Library selectedLib = (Library)comboLibraries.SelectedItem;
+            if (!(comboLibraries.SelectedItem is Library selectedLib)) { return; }
 
             // Get all content from the select library
             List<Content> contentList = Unifi.GetContentFromLibrary(unifiToken, selectedLib.Id);
