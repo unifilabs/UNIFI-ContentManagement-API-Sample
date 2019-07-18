@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using ContentManagement.Entities;
 
 namespace ContentManagement {
@@ -96,11 +97,21 @@ namespace ContentManagement {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void BtnEditContent_Click(object sender, RoutedEventArgs e) {
+            // Get selected item as a Content object
+            if (!(dataGridMain.SelectedItem is Content selectedContent)) { return; }
+
+            editContent(selectedContent);
+        }
+
+        private void DataGridMain_OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            if (!(dataGridMain.SelectedItem is Content selectedContent)) { return; }
+
+            editContent(selectedContent);
+        }
+
+        private void editContent(Content selectedContent) {
             // Show form for editing parameters
             gridEditParams.Visibility = Visibility.Visible;
-
-            // Get selected item as a Content object
-            Content selectedContent = (Content)dataGridMain.SelectedItem;
 
             // Prepopulate Manufacturer and Model fields
             if (selectedContent.Manufacturer != "") { txtBxManufacturer.Text = selectedContent.Manufacturer; }

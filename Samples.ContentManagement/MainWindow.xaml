@@ -16,7 +16,7 @@
             <Grid Height="100" Width="100" />
         </ComboBox>
         <DataGrid x:Name="dataGridMain" Margin="10,66,10,44.2" ItemsSource="{Binding}" AutoGenerateColumns="False"
-                  SelectionChanged="DataGridMain_SelectionChanged" SelectionMode="Single" CanUserAddRows="False">
+                  SelectionChanged="DataGridMain_SelectionChanged" SelectionMode="Single" CanUserAddRows="False" MouseDoubleClick="DataGridMain_OnMouseDoubleClick">
             <DataGrid.Columns>
                 <!--<DataGridTextColumn Header="LastModifiedDate" Width="*" Binding="{Binding Path=LastModifiedDate}" IsReadOnly="True" />-->
                 <!--<DataGridTextColumn Header="Filename" Width="*" Binding="{Binding Path=Filename}" IsReadOnly="True" />-->
