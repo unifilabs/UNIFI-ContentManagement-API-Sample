@@ -13,25 +13,17 @@
         <ComboBox x:Name="comboLibraries" HorizontalAlignment="Left" Margin="11,35,0,0" VerticalAlignment="Top"
                   Width="220" RenderTransformOrigin="0.5,0.5" DisplayMemberPath="Name"
                   SelectionChanged="ComboLibraries_SelectionChanged">
-            <ComboBox.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform />
-                    <SkewTransform />
-                    <RotateTransform Angle="0.23" />
-                    <TranslateTransform />
-                </TransformGroup>
-            </ComboBox.RenderTransform>
             <Grid Height="100" Width="100" />
         </ComboBox>
         <DataGrid x:Name="dataGridMain" Margin="10,66,10,44.2" ItemsSource="{Binding}" AutoGenerateColumns="False"
-                  SelectionChanged="DataGridMain_SelectionChanged" SelectionMode="Single">
+                  SelectionChanged="DataGridMain_SelectionChanged" SelectionMode="Single" CanUserAddRows="False">
             <DataGrid.Columns>
-                <!--<DataGridTextColumn Header="LastModifiedDate" Width="*" Binding="{Binding Path=LastModifiedDate}" />-->
-                <!--<DataGridTextColumn Header="Filename" Width="*" Binding="{Binding Path=Filename}" />-->
-                <DataGridTextColumn Header="Title" Width="*" Binding="{Binding Title}" />
-                <DataGridTextColumn Header="Category" Width="*" Binding="{Binding Category}" />
-                <DataGridTextColumn Header="Manufacturer" Width="*" Binding="{Binding Manufacturer}" />
-                <DataGridTextColumn Header="Model" Width="*" Binding="{Binding Model}" />
+                <!--<DataGridTextColumn Header="LastModifiedDate" Width="*" Binding="{Binding Path=LastModifiedDate}" IsReadOnly="True" />-->
+                <!--<DataGridTextColumn Header="Filename" Width="*" Binding="{Binding Path=Filename}" IsReadOnly="True" />-->
+                <DataGridTextColumn Header="Title" Width="*" Binding="{Binding Title}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Category" Width="*" Binding="{Binding Category}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Manufacturer" Width="*" Binding="{Binding Manufacturer}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Model" Width="*" Binding="{Binding Model}" IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>
         <Label Content="Choose a Library" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" />
