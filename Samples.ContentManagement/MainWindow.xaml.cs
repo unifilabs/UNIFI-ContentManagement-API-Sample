@@ -73,14 +73,11 @@ namespace ContentManagement {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DataGridMain_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            var selectedContent = new Content();
-
             // Get selected item as a Content object
-            if (dataGridMain.SelectedItem != null) { selectedContent = (Content)dataGridMain.SelectedItem; }
+            if (!(dataGridMain.SelectedItem is Content selectedContent)) { return; }
 
             // Enable Edit Button if an iten is selected, hide if none
-            if (dataGridMain.SelectedItems.Count > 0) { btnEditContent.Visibility = Visibility.Visible; }
-            else { btnEditContent.Visibility = Visibility.Hidden; }
+            btnEditContent.Visibility = dataGridMain.SelectedItems.Count > 0 ? Visibility.Visible : Visibility.Hidden;
 
             // Update status message to show object IDs
             if (dataGridMain.SelectedItems.Count == 1) {
@@ -122,8 +119,7 @@ namespace ContentManagement {
             selectedContent.FamilyTypes = Unifi.GetFamilyTypes(selectedContent);
 
             // Add each Revit Family Type to the combobox as items
-            foreach (var familyType in selectedContent.FamilyTypes)
-                comboFamilyTypes.Items.Add(familyType);
+            foreach (var familyType in selectedContent.FamilyTypes) { comboFamilyTypes.Items.Add(familyType); }
 
             // Select first Family Type in list
             comboFamilyTypes.SelectedIndex = 0;
@@ -136,10 +132,12 @@ namespace ContentManagement {
         /// <param name="e"></param>
         private void BtnSave_Click(object sender, RoutedEventArgs e) {
             // Get selected row as a Content object
-            var selectedItem = dataGridMain.SelectedItems.OfType<Content>().ToList()[0];
+            var selectedItem = dataGridMain.SelectedItems.OfType<Content>().ToList().FirstOrDefault();
+
+            if (selectedItem == null) { return; }
 
             // Get selected Type Name
-            var familyTypeName = (comboFamilyTypes.SelectedValue).ToString();
+            var familyTypeName = comboFamilyTypes.SelectedValue.ToString();
 
             try {
                 // Call API to set the Type Parameter value and retrieve the response as Batch object
