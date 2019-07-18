@@ -25,13 +25,13 @@ namespace ContentManagement {
             gridBatchMonitor.Visibility = Visibility.Hidden;
 
             // Get all libraries from Unifi and display in the libraries combobox
-            List<Library> libraries = Unifi.GetLibraries(unifiToken);
+            var libraries = Unifi.GetLibraries(unifiToken);
 
             // Sort the libraries by name
             libraries = libraries.OrderBy(o => o.Name).ToList();
 
             // Add each library to the combobox as items
-            foreach (Library library in libraries)
+            foreach (var library in libraries)
                 comboLibraries.Items.Add(library);
         }
 
@@ -44,15 +44,15 @@ namespace ContentManagement {
             if (!(comboLibraries.SelectedItem is Library selectedLib)) { return; }
 
             // Get all content from the select library
-            List<Content> contentList = Unifi.GetContentFromLibrary(unifiToken, selectedLib.Id);
+            var contentList = Unifi.GetContentFromLibrary(unifiToken, selectedLib.Id);
 
             // Loop through all Content and retrieve Manufacturer and Model parameter data
-            foreach (Content c in contentList) {
-                List<Parameter> parameters = new List<Parameter>();
+            foreach (var c in contentList) {
+                var parameters = new List<Parameter>();
                 parameters = c.Parameters.ToList();
 
                 // Loop through all parameters to retrieve the Manufacturer and Model parameter values for display in DataGrid
-                foreach (Parameter p in parameters) {
+                foreach (var p in parameters) {
                     // Pass parameter values to Content object
                     if (p.Name == "Manufacturer") { c.Manufacturer = p.Value; }
 
@@ -73,7 +73,7 @@ namespace ContentManagement {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DataGridMain_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            Content selectedContent = new Content();
+            var selectedContent = new Content();
 
             // Get selected item as a Content object
             if (dataGridMain.SelectedItem != null) { selectedContent = (Content)dataGridMain.SelectedItem; }
@@ -122,7 +122,7 @@ namespace ContentManagement {
             selectedContent.FamilyTypes = Unifi.GetFamilyTypes(selectedContent);
 
             // Add each Revit Family Type to the combobox as items
-            foreach (string familyType in selectedContent.FamilyTypes)
+            foreach (var familyType in selectedContent.FamilyTypes)
                 comboFamilyTypes.Items.Add(familyType);
 
             // Select first Family Type in list
@@ -136,16 +136,16 @@ namespace ContentManagement {
         /// <param name="e"></param>
         private void BtnSave_Click(object sender, RoutedEventArgs e) {
             // Get selected row as a Content object
-            Content selectedItem = dataGridMain.SelectedItems.OfType<Content>().ToList()[0];
+            var selectedItem = dataGridMain.SelectedItems.OfType<Content>().ToList()[0];
 
             // Get selected Type Name
-            string familyTypeName = (comboFamilyTypes.SelectedValue).ToString();
+            var familyTypeName = (comboFamilyTypes.SelectedValue).ToString();
 
             try {
                 // Call API to set the Type Parameter value and retrieve the response as Batch object
-                Batch batchManufacturer =
+                var batchManufacturer =
                     Unifi.SetTypeParameterValue(unifiToken, selectedItem, familyTypeName, "Manufacturer", txtBxManufacturer.Text, "TEXT", 2016);
-                Batch batchModel = Unifi.SetTypeParameterValue(unifiToken, selectedItem, familyTypeName, "Model", txtBxModel.Text, "TEXT", 2016);
+                var batchModel = Unifi.SetTypeParameterValue(unifiToken, selectedItem, familyTypeName, "Model", txtBxModel.Text, "TEXT", 2016);
 
                 comboBatches.Items.Add(batchManufacturer.BatchId);
                 comboBatches.Items.Add(batchModel.BatchId);

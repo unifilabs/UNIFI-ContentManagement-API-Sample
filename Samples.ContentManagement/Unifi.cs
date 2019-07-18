@@ -25,7 +25,7 @@ namespace ContentManagement {
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("Content-Type", "application/json");
             request.AddParameter("undefined", JsonConvert.SerializeObject(new { username, password }), ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request);
+            var response = client.Execute(request);
 
             // Deserialize JSON response to a dynamic object to retrieve the access token
             var obj = JsonConvert.DeserializeObject<dynamic>(response.Content);
@@ -41,13 +41,13 @@ namespace ContentManagement {
         /// <returns></returns>
         public static List<Library> GetLibraries(string accessToken) {
             // Instantiate a list of Library objects to deserialize the JSON response
-            List<Library> _libraries = new List<Library>();
+            var _libraries = new List<Library>();
 
             var client = new RestClient("https://api.unifilabs.com/libraries");
             var request = new RestRequest(Method.GET);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("Authorization", "Bearer " + accessToken);
-            IRestResponse response = client.Execute(request);
+            var response = client.Execute(request);
 
             // Deserialize JSON response to a List of Library objects
             _libraries = JsonConvert.DeserializeObject<List<Library>>(response.Content);
@@ -62,7 +62,7 @@ namespace ContentManagement {
         /// <param name="libraryId">The library ID to search.</param>
         /// <returns></returns>
         public static List<Content> GetContentFromLibrary(string accessToken, Guid libraryId) {
-            List<Content> _content = new List<Content>();
+            var _content = new List<Content>();
 
             var client = new RestClient("https://api.unifilabs.com/search");
             var request = new RestRequest(Method.POST);
@@ -75,7 +75,7 @@ namespace ContentManagement {
                 @return = "with-parameters",
                 size = 20
             }), ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request);
+            var response = client.Execute(request);
 
             // Deserialize JSON response to a List of Content objects
             try { _content = JsonConvert.DeserializeObject<List<Content>>(response.Content); }
@@ -91,7 +91,7 @@ namespace ContentManagement {
         /// <param name="name">The name of the Content to search for.</param>
         /// <returns></returns>
         public static Content GetContentByName(string accessToken, string name) {
-            List<Content> content = new List<Content>();
+            var content = new List<Content>();
 
             var client = new RestClient("https://api.unifilabs.com/search");
             var request = new RestRequest(Method.POST);
@@ -99,7 +99,7 @@ namespace ContentManagement {
             request.AddHeader("Authorization", "Bearer " + accessToken);
             request.AddHeader("Content-Type", "application/json");
             request.AddParameter("undefined", JsonConvert.SerializeObject(new { terms = name, @return = "with-parameters" }), ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request);
+            var response = client.Execute(request);
 
             // Deserialize JSON response to a Content object
             try { content = JsonConvert.DeserializeObject<List<Content>>(response.Content); }
@@ -121,10 +121,10 @@ namespace ContentManagement {
         /// <param name="content">The UNIFI Content object to get parameters from.</param>
         /// <returns></returns>
         public static List<string> GetFamilyTypes(Content content) {
-            List<string> familyTypes = new List<string>();
+            var familyTypes = new List<string>();
 
             // Loop through all parameters
-            foreach (Parameter p in content.Parameters) {
+            foreach (var p in content.Parameters) {
                 // Pass parameter values to Content object
                 if (p.TypeName != "") { familyTypes.Add(p.TypeName); }
             }
@@ -174,10 +174,10 @@ namespace ContentManagement {
                 }
             }), ParameterType.RequestBody);
 
-            IRestResponse response = client.Execute(request);
+            var response = client.Execute(request);
 
             // Deserialize reponse as Batch object
-            Batch batch = JsonConvert.DeserializeObject<Batch>(response.Content);
+            var batch = JsonConvert.DeserializeObject<Batch>(response.Content);
 
             return batch;
         }
