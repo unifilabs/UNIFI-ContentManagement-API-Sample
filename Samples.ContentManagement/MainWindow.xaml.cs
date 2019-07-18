@@ -169,7 +169,7 @@ namespace ContentManagement {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BtnRefreshBatchMon_Click(object sender, RoutedEventArgs e) {
+        private async void BtnRefreshBatchMon_Click(object sender, RoutedEventArgs e) {
             // Get BatchId from combobox
             if (comboBatches.SelectedItem == null) { return; }
 
@@ -180,7 +180,7 @@ namespace ContentManagement {
             listBatchStatus.Items.Add(loading);
 
             // Retrieve BatchStatus and display data
-            var status = Unifi.GetBatchStatus(unifiToken, batchId);
+            var status = await Unifi.GetBatchStatus(unifiToken, batchId);
 
             listBatchStatus.Items.Remove(loading);
             listBatchStatus.Items.Add($"[{DateTime.Now.ToLocalTime()}] {batchId} {status.TotalFiles} Files | " +

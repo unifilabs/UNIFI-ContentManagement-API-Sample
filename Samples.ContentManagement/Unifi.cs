@@ -6,6 +6,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using ContentManagement.Entities;
 using Parameter = ContentManagement.Entities.Parameter;
@@ -187,18 +188,15 @@ namespace ContentManagement {
         /// <param name="accessToken">UNIFI access token</param>
         /// <param name="batchId">The ID of the Batch</param>
         /// <returns></returns>
-        public static BatchStatus GetBatchStatus(string accessToken, string batchId) {
+        public static async Task<BatchStatus> GetBatchStatus(string accessToken, string batchId) {
             var client = new RestClient("https://api.unifilabs.com/batch/" + batchId);
             var request = new RestRequest(Method.GET);
             request.AddHeader("cache-control", "no-cache");
             request.AddHeader("Authorization", "Bearer " + accessToken);
             request.AddHeader("Content-Type", "application/json");
-            IRestResponse response = client.Execute(request);
+            var response = await client.ExecuteTaskAsync<BatchStatus>(request);
 
-            // Deserialize reponse as BatchStatus object
-            BatchStatus batchStatus = JsonConvert.DeserializeObject<BatchStatus>(response.Content);
-
-            return batchStatus;
+            return response.Data;
         }
 
         /// <summary>
