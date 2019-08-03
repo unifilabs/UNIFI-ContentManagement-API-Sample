@@ -116,6 +116,54 @@ namespace ContentManagement {
         }
 
         /// <summary>
+        /// Get a specific Content by its FileRevisionId
+        /// </summary>
+        /// <param name="accessToken">UNIFI access token.</param>
+        /// <param name="revisionId">The FileRevisionId property of the content.</param>
+        /// <param name="libraryId">The ID of a library the content belongs to.</param>
+        /// <returns></returns>
+        public static Content GetContentByRevisionId(string accessToken, Guid revisionId, Guid libraryId)
+        {
+            var content = new List<Content>();
+
+            var client = new RestClient("https://api.unifilabs.com/search");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("Authorization", "Bearer " + accessToken);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddParameter("undefined", JsonConvert.SerializeObject(
+                new {
+                        terms = "*",
+                        parameters = new [] { new { FileRevisionId = revisionId }
+                    },
+                    libraries = new [] { libraryId },
+                    @return = "with-parameters"
+                }
+                ), 
+            ParameterType.RequestBody
+            );
+            var response = client.Execute(request);
+
+            // Deserialize JSON response to a Content object
+            try
+            {
+                content = JsonConvert.DeserializeObject<List<Content>>(response.Content);
+            }
+            catch (Exception ex)
+            {
+                // Display debug info if exception is caught
+                MessageBox.Show(ex.ToString(), "Exception");
+                MessageBox.Show(response.Content, "Exception");
+            }
+
+            // TODO: Ensure that only one content is returned rather than hardcoding the first item in list
+            if (content.Count > 1) { MessageBox.Show("Warning, more than one piece of content matches this query.", "Warning"); }
+
+            return content[0];
+        }
+
+
+        /// <summary>
         /// Get Revit Family Types from a Content object.
         /// </summary>
         /// <param name="content">The UNIFI Content object to get parameters from.</param>
