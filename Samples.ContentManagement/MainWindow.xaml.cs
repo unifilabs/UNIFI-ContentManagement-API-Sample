@@ -12,11 +12,6 @@ namespace ContentManagement {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        // Get an access token using basic authentication (username and password)
-        // Optionally create a file named "Secrets.cs" and add fields called UnifiUsername and UnifiPassword and add your credentials for the below code to work.
-        // Don't forget to ensure that this file is added to your .gitignore file.
-        string unifiToken = Unifi.GetAccessToken(Secrets.UnifiUsername, Secrets.UnifiPassword);
-
         public MainWindow() {
             InitializeComponent();
 
@@ -25,7 +20,7 @@ namespace ContentManagement {
             gridBatchMonitor.Visibility = Visibility.Hidden;
 
             // Get all libraries from Unifi and display in the libraries combobox
-            var libraries = Unifi.GetLibraries(unifiToken);
+            var libraries = Unifi.GetLibraries(Secrets.ApiKey);
 
             // Sort the libraries by name
             libraries = libraries.OrderBy(o => o.Name).ToList();
@@ -44,7 +39,7 @@ namespace ContentManagement {
             if (!(comboLibraries.SelectedItem is Library selectedLib)) { return; }
 
             // Get all content from the select library
-            var contentList = Unifi.GetContentFromLibrary(unifiToken, selectedLib.Id);
+            var contentList = Unifi.GetContentFromLibrary(Secrets.ApiKey, selectedLib.Id);
 
             // Loop through all Content and retrieve Manufacturer and Model parameter data
             foreach (var c in contentList) {
@@ -142,8 +137,8 @@ namespace ContentManagement {
             try {
                 // Call API to set the Type Parameter value and retrieve the response as Batch object
                 var batchManufacturer =
-                    Unifi.SetTypeParameterValue(unifiToken, selectedItem, familyTypeName, "Manufacturer", txtBxManufacturer.Text, "TEXT", 2016);
-                var batchModel = Unifi.SetTypeParameterValue(unifiToken, selectedItem, familyTypeName, "Model", txtBxModel.Text, "TEXT", 2016);
+                    Unifi.SetTypeParameterValue(Secrets.ApiKey, selectedItem, familyTypeName, "Manufacturer", txtBxManufacturer.Text, "TEXT", 2016);
+                var batchModel = Unifi.SetTypeParameterValue(Secrets.ApiKey, selectedItem, familyTypeName, "Model", txtBxModel.Text, "TEXT", 2016);
 
                 comboBatches.Items.Add(batchManufacturer.BatchId);
                 comboBatches.Items.Add(batchModel.BatchId);
@@ -189,7 +184,7 @@ namespace ContentManagement {
             listBatchStatus.Items.Add(loading);
 
             // Retrieve BatchStatus and display data
-            var status = await Unifi.GetBatchStatus(unifiToken, batchId);
+            var status = await Unifi.GetBatchStatus(Secrets.ApiKey, batchId);
 
             listBatchStatus.Items.Remove(loading);
             listBatchStatus.Items.Add($"[{DateTime.Now.ToLocalTime()}] {batchId} {status.TotalFiles} Files | " +
